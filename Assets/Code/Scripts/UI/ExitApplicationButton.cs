@@ -1,38 +1,29 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class ExitApplicationButton : MonoBehaviour
+namespace Tanks.UI
 {
-    private void Start()
+    public class ExitApplicationButton : MonoBehaviour
     {
-        #if (UNITY_EDITOR || UNITY_STANDALONE)
-            gameObject.SetActive(true);
-        #elif UNITY_WEBGL
-            gameObject.SetActive(false);
-        #endif
-    }
-
-    private void Update()
-    {
-        if (
-            EventSystem.current.currentSelectedGameObject == gameObject
-            && Input.GetButtonDown(GameConstants.BUTTON_NAME_SUBMIT)
-        )
+        private void Start()
         {
-            ExitApplication();
+            #if (UNITY_EDITOR || UNITY_STANDALONE)
+                gameObject.SetActive(true);
+            #elif UNITY_WEBGL
+                gameObject.SetActive(false);
+            #endif
         }
-    }
 
-    public void ExitApplication()
-    {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #elif UNITY_STANDALONE
-            Application.Quit();
-        #endif
+        public void ExitApplication()
+        {
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+            #elif UNITY_STANDALONE
+                Application.Quit();
+            #endif
+        }
     }
 }

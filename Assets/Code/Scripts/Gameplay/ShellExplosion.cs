@@ -1,60 +1,63 @@
 ﻿using UnityEngine;
 
-public class ShellExplosion : MonoBehaviour
+namespace Tanks.Gameplay
 {
-    public LayerMask tankMask;
-    public ParticleSystem explosionParticles;
-    public AudioSource explosionAudio;
-    public float maxDamage = 100f;
-    public float explosionForce = 1000f;
-    public float maxLifeTime = 2f;
-    public float explosionRadius = 5f;
-
-    private void Start()
+    public class ShellExplosion : MonoBehaviour
     {
-        Destroy(gameObject, maxLifeTime);
-    }
+        public LayerMask tankMask;
+        public ParticleSystem explosionParticles;
+        public AudioSource explosionAudio;
+        public float maxDamage = 100f;
+        public float explosionForce = 1000f;
+        public float maxLifeTime = 2f;
+        public float explosionRadius = 5f;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, tankMask);
-
-        for (int i = 0; i < colliders.Length; i++)
+        private void Start()
         {
-            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
-            if (!targetRigidbody)
-            {
-                continue;
-            }
-
-            targetRigidbody.AddExplosionForce(explosionForce, transform.position, explosionRadius);
-
-            TankHealth targetHeatlh = targetRigidbody.GetComponent<TankHealth>();
-            if (!targetHeatlh)
-            {
-                continue;
-            }
-
-            float damage = CalculateDamage(targetRigidbody.position);
-            targetHeatlh.TakeDamage(damage);
+            Destroy(gameObject, maxLifeTime);
         }
 
-        explosionParticles.transform.parent = null;
-        explosionParticles.Play();
-        explosionAudio.Play();
+        private void OnTriggerEnter(Collider other)
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, tankMask);
 
-        Destroy(explosionParticles.gameObject, explosionParticles.main.duration);
-        Destroy(gameObject);
-    }
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+                if (!targetRigidbody)
+                {
+                    continue;
+                }
 
-    private float CalculateDamage(Vector3 targetPosition)
-    {
-        Vector3 explosionToTarget = targetPosition - transform.position;
-        float explosionDistance = explosionToTarget.magnitude;
-        float relativeDistance = (explosionRadius - explosionDistance) / explosionRadius;
-        float damage = relativeDistance * maxDamage;
-        damage = Mathf.Max(0f, damage);
+                targetRigidbody.AddExplosionForce(explosionForce, transform.position, explosionRadius);
 
-        return damage;
+                TankHealth targetHeatlh = targetRigidbody.GetComponent<TankHealth>();
+                if (!targetHeatlh)
+                {
+                    continue;
+                }
+
+                float damage = CalculateDamage(targetRigidbody.position);
+                targetHeatlh.TakeDamage(damage);
+            }
+
+            explosionParticles.transform.parent = null;
+            explosionParticles.Play();
+            explosionAudio.Play();
+
+            Destroy(explosionParticles.gameObject, explosionParticles.main.duration);
+            Destroy(gameObject);
+        }
+
+        private float CalculateDamage(Vector3 targetPosition)
+        {
+            Vector3 explosionToTarget = targetPosition - transform.position;
+            float explosionDistance = explosionToTarget.magnitude;
+            float relativeDistance = (explosionRadius - explosionDistance) / explosionRadius;
+            float damage = relativeDistance * maxDamage;
+            damage = Mathf.Max(0f, damage);
+
+            return damage;
+        }
     }
 }

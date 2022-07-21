@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadSceneButton : MonoBehaviour
+namespace Tanks.UI
 {
-    [SerializeField] public string scenePath;
-    [SerializeField] public string sceneName;
-
-    public void LoadScene()
+    public class LoadSceneButton : MonoBehaviour
     {
-        SceneManager.LoadScene(sceneName);
+        [SerializeField] public string scenePath;
+        [SerializeField] public string sceneName;
+
+        public void LoadScene()
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 }

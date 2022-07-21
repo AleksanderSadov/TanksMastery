@@ -1,27 +1,31 @@
+using Tanks.UI;
 using UnityEditor;
 
-[CustomEditor(typeof(LoadSceneButton), true)]
-public class ScenePickerEditor : Editor
+namespace Tanks.EditorExtensions
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(LoadSceneButton), true)]
+    public class ScenePickerEditor : Editor
     {
-        var picker = target as LoadSceneButton;
-        var oldScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(picker.scenePath);
-
-        serializedObject.Update();
-
-        EditorGUI.BeginChangeCheck();
-        var newScene = EditorGUILayout.ObjectField("Load Scene", oldScene, typeof(SceneAsset), false) as SceneAsset;
-
-        if (EditorGUI.EndChangeCheck())
+        public override void OnInspectorGUI()
         {
-            var newPath = AssetDatabase.GetAssetPath(newScene);
-            var newName = newScene.name;
-            var scenePathProperty = serializedObject.FindProperty("scenePath");
-            var sceneNameProperty = serializedObject.FindProperty("sceneName");
-            scenePathProperty.stringValue = newPath;
-            sceneNameProperty.stringValue = newName;
+            var picker = target as LoadSceneButton;
+            var oldScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(picker.scenePath);
+
+            serializedObject.Update();
+
+            EditorGUI.BeginChangeCheck();
+            var newScene = EditorGUILayout.ObjectField("Load Scene", oldScene, typeof(SceneAsset), false) as SceneAsset;
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                var newPath = AssetDatabase.GetAssetPath(newScene);
+                var newName = newScene.name;
+                var scenePathProperty = serializedObject.FindProperty("scenePath");
+                var sceneNameProperty = serializedObject.FindProperty("sceneName");
+                scenePathProperty.stringValue = newPath;
+                sceneNameProperty.stringValue = newName;
+            }
+            serializedObject.ApplyModifiedProperties();
         }
-        serializedObject.ApplyModifiedProperties();
     }
 }
