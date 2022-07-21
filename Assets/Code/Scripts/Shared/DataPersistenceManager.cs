@@ -1,7 +1,7 @@
 using UnityEngine;
-using static Tanks.Gameplay.GameModeManager;
+using static Tanks.Shared.GameConstants;
 
-namespace Tanks.Gameplay
+namespace Tanks.Shared
 {
     public class DataPersistenceManager : MonoBehaviour
     {

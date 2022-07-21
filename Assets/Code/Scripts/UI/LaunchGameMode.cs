@@ -1,7 +1,7 @@
-using Tanks.Gameplay;
+using Tanks.Shared;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Tanks.Gameplay.GameModeManager;
+using static Tanks.Shared.GameConstants;
 
 namespace Tanks.UI
 {

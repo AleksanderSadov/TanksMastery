@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Events;
+using Tanks.Shared;
 
 namespace Tanks.Gameplay
 {
@@ -17,15 +19,18 @@ namespace Tanks.Gameplay
         public GameObject tankPrefab;
         public TankManager[] tanks;
 
-        private int roundNumber;
+        public TankManager roundWinner { get; private set; }
+        public TankManager gameWinner { get; private set; }
+        public int roundNumber { get; private set; }
+
         private WaitForSeconds startWait;
         private WaitForSeconds endWait;
-        private TankManager roundWinner;
-        private TankManager gameWinner;
 
         private void Start()
         {
             Physics.defaultMaxDepenetrationVelocity = MAX_DEPENETRATION_VELOCITY;
+
+
 
             startWait = new WaitForSeconds(startDelay);
             endWait = new WaitForSeconds(endDelay);
@@ -85,7 +90,9 @@ namespace Tanks.Gameplay
             cameraControl.SetStartPositionAndSize();
 
             roundNumber++;
-            messageText.text = "ROUND " + roundNumber;
+            RoundStartingEvent roundStartingEvent = Events.RoundStartingEvent;
+            roundStartingEvent.roundNumber = roundNumber;
+            EventManager.Broadcast(Events.RoundStartingEvent);
 
             yield return startWait;
         }
@@ -113,7 +120,8 @@ namespace Tanks.Gameplay
             }
 
             gameWinner = GetGameWinner();
-            messageText.text = EndMessage();
+
+            EventManager.Broadcast(Events.RoundEndingEvent);
 
             yield return endWait;
         }
@@ -157,30 +165,6 @@ namespace Tanks.Gameplay
             }
 
             return null;
-        }
-
-        private string EndMessage()
-        {
-            string message = "DRAW!";
-
-            if (roundWinner != null)
-            {
-                message = roundWinner.coloredPlayerText + " WINS THE ROUND!";
-            }
-
-            message += "\n\n\n\n";
-
-            for (int i = 0; i < tanks.Length; i++)
-            {
-                message += tanks[i].coloredPlayerText + ": " + tanks[i].wins + " WINS\n";
-            }
-
-            if (gameWinner != null)
-            {
-                message = gameWinner.coloredPlayerText + " WINS THE GAME!";
-            }
-
-            return message;
         }
 
         private void ResetAllTanks()

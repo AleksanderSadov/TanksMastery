@@ -10,7 +10,6 @@ namespace Tanks.Gameplay
         public Transform spawnPoint;
 
         [HideInInspector] public int playerNumber;
-        [HideInInspector] public string coloredPlayerText;
         [HideInInspector] public GameObject instance;
         [HideInInspector] public int wins;
 
@@ -26,8 +25,6 @@ namespace Tanks.Gameplay
 
             movement.playerNumber = playerNumber;
             shooting.playerNumber = playerNumber;
-
-            coloredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">PLAYER " + playerNumber + "</color>";
 
             MeshRenderer[] renderers = instance.GetComponentsInChildren<MeshRenderer>();
 

@@ -2,6 +2,7 @@
     "name": "Unity.Tanks.Gameplay",
     "rootNamespace": "",
     "references": [
+        "GUID:2a1b4e0eb0e8e3b478adcae7a2602cf1",
         "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],

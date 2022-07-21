@@ -1,9 +1,9 @@
-using Tanks.Gameplay;
+using Tanks.Shared;
 using UnityEngine;
 
 namespace Tanks.UI
 {
-    public class PauseMenuManager : MonoBehaviour
+    public class PauseMenuUI : MonoBehaviour
     {
         [SerializeField] private GameObject pauseMenuParent;
         [SerializeField] private GameObject gameMessageText;
