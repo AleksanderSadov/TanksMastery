@@ -17,7 +17,7 @@ namespace Tanks.Gameplay
         private TeamManager teamManager;
         private Dictionary<TeamAffiliation, List<SpawnPoint>> spawnPoints;
 
-        private void Start()
+        private void Awake()
         {
             gameManager = GetComponent<GameManager>();
             teamManager = GetComponent<TeamManager>();
