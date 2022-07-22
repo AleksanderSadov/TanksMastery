@@ -28,7 +28,7 @@ namespace Tanks.Gameplay
 
         private void Start()
         {
-            fireButton = "Fire" + playerNumber;
+            fireButton = GameConstants.AXIS_NAME_PLAYER_FIRE + playerNumber;
             chargeSpeed = (maxLaunchForce - minLaunchForce) / maxChargeTime;
         }
 

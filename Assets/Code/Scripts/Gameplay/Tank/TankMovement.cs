@@ -34,8 +34,8 @@ namespace Tanks.Gameplay
 
         private void Start()
         {
-            movementAxisName = "Vertical" + playerNumber;
-            turnAxisName = "Horizontal" + playerNumber;
+            movementAxisName = GameConstants.AXIS_NAME_PLAYER_VERTICAL + playerNumber;
+            turnAxisName = GameConstants.AXIS_NAME_PLAYER_HORIZONTAL + playerNumber;
         }
 
         private void Update()
