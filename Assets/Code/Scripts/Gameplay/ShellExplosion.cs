@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Tanks.Gameplay
 {
     public class ShellExplosion : MonoBehaviour
     {
         public LayerMask tankMask;
-        public ParticleSystem explosionParticles;
-        public AudioSource explosionAudio;
         public float maxDamage = 100f;
         public float explosionForce = 1000f;
         public float maxLifeTime = 2f;
         public float explosionRadius = 5f;
+
+        public UnityAction OnExplosion;
 
         private void Start()
         {
@@ -41,11 +42,7 @@ namespace Tanks.Gameplay
                 targetHeatlh.TakeDamage(damage);
             }
 
-            explosionParticles.transform.parent = null;
-            explosionParticles.Play();
-            explosionAudio.Play();
-
-            Destroy(explosionParticles.gameObject, explosionParticles.main.duration);
+            OnExplosion?.Invoke();
             Destroy(gameObject);
         }
 
