@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Tanks.Gameplay
 {
-    public enum TEAM_AFFILIATION
+    public enum TeamAffiliation
     {
         TEAM_ONE,
         TEAM_TWO,
@@ -13,7 +13,7 @@ namespace Tanks.Gameplay
     [Serializable]
     public class Team
     {
-        public TEAM_AFFILIATION teamAffiliation;
+        public TeamAffiliation teamAffiliation;
         public Color teamColor;
         public string teamLabel;
         public int roundsWon;
@@ -46,7 +46,7 @@ namespace Tanks.Gameplay
     {
         public List<Team> teams;
 
-        public void AddMemberToTeam(TeamMember teamMember, TEAM_AFFILIATION teamAffiliation)
+        public void AddMemberToTeam(TeamMember teamMember, TeamAffiliation teamAffiliation)
         {
             Team team = GetTeam(teamAffiliation);
             if (team == null)
@@ -61,7 +61,7 @@ namespace Tanks.Gameplay
             }
         }
 
-        public void RemoveMemberFromTeam(TeamMember teamMember, TEAM_AFFILIATION teamAffiliation)
+        public void RemoveMemberFromTeam(TeamMember teamMember, TeamAffiliation teamAffiliation)
         {
             Team team = GetTeam(teamAffiliation);
             if (team == null)
@@ -75,7 +75,7 @@ namespace Tanks.Gameplay
             }
         }
 
-        public Team GetTeam(TEAM_AFFILIATION teamAffiliation)
+        public Team GetTeam(TeamAffiliation teamAffiliation)
         {
             foreach (Team team in teams)
             {
@@ -104,6 +104,19 @@ namespace Tanks.Gameplay
             }
 
             return allParticipants;
+        }
+
+        public Team GetRivalTeam(TeamAffiliation allyTeamAffiliation)
+        {
+            foreach (Team team in teams)
+            {
+                if (team.teamAffiliation != allyTeamAffiliation)
+                {
+                    return team;
+                }
+            }
+
+            return null;
         }
     }
 }

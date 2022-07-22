@@ -49,7 +49,17 @@ namespace Tanks.Gameplay
 
         public override bool IsMoving()
         {
-            if (Mathf.Abs(movementInputValue) >= 0.1f || Mathf.Abs(turnInputValue) >= 0.1f)
+            if (Mathf.Abs(movementInputValue) >= 0.1f)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool IsTurning()
+        {
+            if (Mathf.Abs(turnInputValue) >= 0.1f)
             {
                 return true;
             }

@@ -4,7 +4,7 @@ namespace Tanks.Gameplay
 {
     public class TeamMember : MonoBehaviour
     {
-        public TEAM_AFFILIATION teamAffiliation;
+        public TeamAffiliation teamAffiliation;
 
         private TeamManager teamManager;
 

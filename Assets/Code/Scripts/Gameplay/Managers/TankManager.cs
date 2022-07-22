@@ -8,7 +8,7 @@ namespace Tanks.Gameplay
     public class TankManager
     {
         public PlayerControlsNumber playerControlsNumber;
-        public TEAM_AFFILIATION teamAffiliation;
+        public TeamAffiliation teamAffiliation;
         public Transform spawnPoint;
 
         [HideInInspector] public GameObject instance;

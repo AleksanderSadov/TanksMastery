@@ -13,7 +13,7 @@ namespace Tanks.Gameplay
         public float startDelay = 3f;
         public float endDelay = 3f;
         public CameraControl cameraControl;
-        public GameObject tankPrefab;
+        public GameObject playerTankPrefab;
         public TankManager[] players;
 
         public Team roundWinnerTeam { get; private set; }
@@ -44,13 +44,13 @@ namespace Tanks.Gameplay
             for (int i = 0; i < players.Length; i++)
             {
                 players[i].instance = Instantiate(
-                    tankPrefab,
+                    playerTankPrefab,
                     players[i].spawnPoint.position,
                     players[i].spawnPoint.rotation
                 ) as GameObject;
 
                 players[i].instance.GetComponent<TeamMember>().teamAffiliation =
-                    i == 0 ? TEAM_AFFILIATION.TEAM_ONE : TEAM_AFFILIATION.TEAM_TWO;
+                    i == 0 ? TeamAffiliation.TEAM_ONE : TeamAffiliation.TEAM_TWO;
                 players[i].Setup();
             }
         }
