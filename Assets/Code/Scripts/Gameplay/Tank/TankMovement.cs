@@ -7,17 +7,13 @@ namespace Tanks.Gameplay
         public int playerNumber = 1;
         public float speed = 12f;
         public float turnSpeed = 180f;
-        public AudioSource movementAudio;
-        public AudioClip engineIdling;
-        public AudioClip engineDriving;
-        public float pitchRange = 0.2f;
+
+        public float movementInputValue { get; private set; }
+        public float turnInputValue { get; private set; }
 
         private string movementAxisName;
         private string turnAxisName;
         private Rigidbody thisRigidbody;
-        private float movementInputValue;
-        private float turnInputValue;
-        private float originalPitch;
 
         private void Awake()
         {
@@ -40,36 +36,12 @@ namespace Tanks.Gameplay
         {
             movementAxisName = "Vertical" + playerNumber;
             turnAxisName = "Horizontal" + playerNumber;
-            originalPitch = movementAudio.pitch;
         }
 
         private void Update()
         {
             movementInputValue = Input.GetAxis(movementAxisName);
             turnInputValue = Input.GetAxis(turnAxisName);
-            EngineAudio();
-        }
-
-        private void EngineAudio()
-        {
-            if (Mathf.Abs(movementInputValue) < 0.1f && Mathf.Abs(turnInputValue) < 0.1f)
-            {
-                if (movementAudio.clip == engineDriving)
-                {
-                    movementAudio.clip = engineIdling;
-                    movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
-                    movementAudio.Play();
-                }
-            }
-            else
-            {
-                if (movementAudio.clip == engineIdling)
-                {
-                    movementAudio.clip = engineDriving;
-                    movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
-                    movementAudio.Play();
-                }
-            }
         }
 
         private void FixedUpdate()

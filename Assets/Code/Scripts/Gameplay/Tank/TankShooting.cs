@@ -12,7 +12,7 @@ namespace Tanks.Gameplay
         public float maxLaunchForce = 30f;
         public float maxChargeTime = 0.75f;
 
-        [HideInInspector] public float currentLaunchForce;
+        public float currentLaunchForce { get; private set; }
 
         public UnityAction OnStartCharging;
         public UnityAction OnFired;
