@@ -19,6 +19,13 @@ public class GameProgressUI : MonoBehaviour
         EventManager.AddListener<RoundEndingEvent>(OnRoundEnding);
     }
 
+    private void OnDestroy()
+    {
+        EventManager.RemoveListener<RoundStartingEvent>(OnRoundStarting);
+        EventManager.RemoveListener<RoundStartedEvent>(OnRoundStarted);
+        EventManager.RemoveListener<RoundEndingEvent>(OnRoundEnding);
+    }
+
     public void OnRoundStarting(RoundStartingEvent evt)
     {
         int roundNumber = gameManager.roundNumber;
