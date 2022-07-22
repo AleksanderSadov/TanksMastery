@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Tanks.UI
 {
-    [RequireComponent(typeof(TankMovement))]
     public class TankMovementFX : MonoBehaviour
     {
         public AudioSource movementAudio;
@@ -38,20 +37,20 @@ namespace Tanks.UI
 
         private void EngineAudio()
         {
-            if (Mathf.Abs(movement.movementInputValue) < 0.1f && Mathf.Abs(movement.turnInputValue) < 0.1f)
+            if (movement.IsMoving())
             {
-                if (movementAudio.clip == engineDriving)
+                if (movementAudio.clip == engineIdling)
                 {
-                    movementAudio.clip = engineIdling;
+                    movementAudio.clip = engineDriving;
                     movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
                     movementAudio.Play();
                 }
             }
             else
             {
-                if (movementAudio.clip == engineIdling)
+                if (movementAudio.clip == engineDriving)
                 {
-                    movementAudio.clip = engineDriving;
+                    movementAudio.clip = engineIdling;
                     movementAudio.pitch = Random.Range(originalPitch - pitchRange, originalPitch + pitchRange);
                     movementAudio.Play();
                 }

@@ -5,21 +5,18 @@ namespace Tanks.Gameplay
 {
     public class TankShooting : MonoBehaviour
     {
-        public int playerNumber = 1;
         public Rigidbody shell;
         public Transform fireTransform;
         public float minLaunchForce = 15f;
         public float maxLaunchForce = 30f;
         public float maxChargeTime = 0.75f;
 
-        public float currentLaunchForce { get; private set; }
+        [HideInInspector] public float currentLaunchForce;
+        [HideInInspector] public bool isFired;
+        [HideInInspector] public float chargeSpeed;
 
         public UnityAction OnStartCharging;
         public UnityAction OnFired;
-
-        private string fireButton;
-        private float chargeSpeed;
-        private bool fired;
 
         private void OnEnable()
         {
@@ -28,40 +25,42 @@ namespace Tanks.Gameplay
 
         private void Start()
         {
-            fireButton = GameConstants.AXIS_NAME_PLAYER_FIRE + playerNumber;
             chargeSpeed = (maxLaunchForce - minLaunchForce) / maxChargeTime;
         }
 
         private void Update()
         {
-            if (currentLaunchForce >= maxLaunchForce && !fired)
-            {
-                currentLaunchForce = maxLaunchForce;
-                Fire();
-            }
-            else if (Input.GetButtonDown(fireButton))
-            {
-                fired = false;
-                currentLaunchForce = minLaunchForce;
-                OnStartCharging?.Invoke();
-            }
-            else if (Input.GetButton(fireButton) && !fired)
-            {
-                currentLaunchForce += chargeSpeed * Time.deltaTime;
-            }
-            else if (Input.GetButtonUp(fireButton) && !fired)
-            {
-                Fire();
-            }
+            CheckFireAtMaxForce();
         }
 
-        private void Fire()
+        public void StartCharging()
         {
-            fired = true;
+            isFired = false;
+            currentLaunchForce = minLaunchForce;
+            OnStartCharging?.Invoke();
+        }
+
+        public void IncrementCharge()
+        {
+            currentLaunchForce += chargeSpeed * Time.deltaTime;
+        }
+
+        public void Fire()
+        {
+            isFired = true;
             Rigidbody shellInstance = Instantiate(shell, fireTransform.position, fireTransform.rotation) as Rigidbody;
             shellInstance.velocity = currentLaunchForce * fireTransform.forward;
             currentLaunchForce = minLaunchForce;
             OnFired?.Invoke();
+        }
+
+        private void CheckFireAtMaxForce()
+        {
+            if (currentLaunchForce >= maxLaunchForce && !isFired)
+            {
+                currentLaunchForce = maxLaunchForce;
+                Fire();
+            }
         }
     }
 }

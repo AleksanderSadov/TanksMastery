@@ -1,17 +1,12 @@
 ﻿using System;
 using UnityEngine;
+using static Tanks.Gameplay.TankPlayerController;
 
 namespace Tanks.Gameplay
 {
     [Serializable]
     public class TankManager
     {
-        public enum PlayerControlsNumber
-        {
-            FIRST = 1,
-            SECOND = 2,
-        }
-
         public PlayerControlsNumber playerControlsNumber;
         public TEAM_AFFILIATION teamAffiliation;
         public Transform spawnPoint;
@@ -20,16 +15,16 @@ namespace Tanks.Gameplay
 
         private TankMovement movement;
         private TankShooting shooting;
+        private TankPlayerController playerController;
         private GameObject canvasGameObject;
 
         public void Setup()
         {
             movement = instance.GetComponent<TankMovement>();
             shooting = instance.GetComponent<TankShooting>();
+            playerController = instance.GetComponent<TankPlayerController>();
             canvasGameObject = instance.GetComponentInChildren<Canvas>().gameObject;
-
-            movement.playerNumber = (int) playerControlsNumber;
-            shooting.playerNumber = (int) playerControlsNumber;
+            playerController.playerControlsNumber = playerControlsNumber;
         }
 
         public void DisableControl()
