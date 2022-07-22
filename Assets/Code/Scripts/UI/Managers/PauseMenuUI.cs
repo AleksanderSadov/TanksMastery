@@ -18,6 +18,11 @@ namespace Tanks.UI
             }
         }
 
+        private void OnDestroy()
+        {
+            Time.timeScale = 1;
+        }
+
         private void TogglePauseMenu()
         {
             isGamePaused = !isGamePaused;
