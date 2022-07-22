@@ -19,10 +19,26 @@ namespace Tanks.UI
             explosionParticles.gameObject.SetActive(false);
         }
 
+        private void OnEnable()
+        {
+            if (health)
+            {
+                health.OnDeath += OnDeath;
+            }
+        }
+
         private void Start()
         {
             health = GetComponent<TankHealth>();
             health.OnDeath += OnDeath;
+        }
+
+        private void OnDisable()
+        {
+            if (health)
+            {
+                health.OnDeath -= OnDeath;
+            }
         }
 
         private void OnDeath()

@@ -1,14 +1,34 @@
+using Tanks.Gameplay;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class TankShootingUI : MonoBehaviour
+namespace Tanks.UI
 {
-    private void Start()
+    [RequireComponent(typeof(TankShooting))]
+    public class TankShootingUI : MonoBehaviour
     {
-        
-    }
+        public Slider aimSlider;
 
-    private void Update()
-    {
-        
+        private TankShooting shooting;
+
+        private void OnEnable()
+        {
+            aimSlider.gameObject.SetActive(true);
+        }
+
+        private void Start()
+        {
+            shooting = GetComponent<TankShooting>();
+        }
+
+        private void LateUpdate()
+        {
+            aimSlider.value = shooting.currentLaunchForce;
+        }
+
+        private void OnDisable()
+        {
+            aimSlider.gameObject.SetActive(false);
+        }
     }
 }

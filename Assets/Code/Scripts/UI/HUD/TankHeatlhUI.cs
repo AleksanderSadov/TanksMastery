@@ -24,7 +24,7 @@ namespace Tanks.UI
             slider.gameObject.SetActive(true);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             SetHealthUI();
         }
