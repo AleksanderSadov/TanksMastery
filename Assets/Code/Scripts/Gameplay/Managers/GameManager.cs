@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using TMPro;
 using System.Collections.Generic;
 
 namespace Tanks.Gameplay
@@ -14,7 +13,6 @@ namespace Tanks.Gameplay
         public float startDelay = 3f;
         public float endDelay = 3f;
         public CameraControl cameraControl;
-        public TextMeshProUGUI messageText;
         public GameObject tankPrefab;
         public TankManager[] players;
 
