@@ -9,15 +9,6 @@ namespace Tanks.UI
         public GameObject explosionPrefab;
 
         private TankHealth health;
-        private AudioSource explosionAudio;
-        private ParticleSystem explosionParticles;
-
-        private void Awake()
-        {
-            explosionParticles = Instantiate(explosionPrefab).GetComponent<ParticleSystem>();
-            explosionAudio = explosionParticles.GetComponent<AudioSource>();
-            explosionParticles.gameObject.SetActive(false);
-        }
 
         private void OnEnable()
         {
@@ -43,9 +34,13 @@ namespace Tanks.UI
 
         private void OnDeath()
         {
+            GameObject explosion = Instantiate(explosionPrefab, transform);
+            ParticleSystem explosionParticles = explosion.GetComponent<ParticleSystem>();
             explosionParticles.transform.position = transform.position;
-            explosionParticles.gameObject.SetActive(true);
             explosionParticles.Play();
+            Destroy(explosionParticles.gameObject, explosionParticles.main.duration);
+
+            AudioSource explosionAudio = explosionParticles.GetComponent<AudioSource>();
             explosionAudio.Play();
         }
     }
