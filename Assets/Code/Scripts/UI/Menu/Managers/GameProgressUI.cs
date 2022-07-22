@@ -2,62 +2,65 @@ using Tanks.Gameplay;
 using TMPro;
 using UnityEngine;
 
-public class GameProgressUI : MonoBehaviour
+namespace Tanks.UI
 {
-    public TextMeshProUGUI gameMessageText;
-    public Color teamOneColor;
-    public Color teamTwoColor;
-
-    private GameManager gameManager;
-
-    private void Start()
+    public class GameProgressUI : MonoBehaviour
     {
-        gameManager = FindObjectOfType<GameManager>();
+        public TextMeshProUGUI gameMessageText;
+        public Color teamOneColor;
+        public Color teamTwoColor;
 
-        EventManager.AddListener<RoundStartingEvent>(OnRoundStarting);
-        EventManager.AddListener<RoundStartedEvent>(OnRoundStarted);
-        EventManager.AddListener<RoundEndingEvent>(OnRoundEnding);
-    }
+        private GameManager gameManager;
 
-    private void OnDestroy()
-    {
-        EventManager.RemoveListener<RoundStartingEvent>(OnRoundStarting);
-        EventManager.RemoveListener<RoundStartedEvent>(OnRoundStarted);
-        EventManager.RemoveListener<RoundEndingEvent>(OnRoundEnding);
-    }
-
-    public void OnRoundStarting(RoundStartingEvent evt)
-    {
-        int roundNumber = gameManager.roundNumber;
-        gameMessageText.text = "ROUND " + evt.roundNumber;
-    }
-
-    public void OnRoundStarted(RoundStartedEvent evt)
-    {
-        gameMessageText.text = string.Empty;
-    }
-
-    public void OnRoundEnding(RoundEndingEvent evt)
-    {
-        string message = "DRAW!";
-
-        if (evt.roundWinnerTeam != null)
+        private void Start()
         {
-            message = evt.roundWinnerTeam.coloredTeamText + " WINS THE ROUND!";
+            gameManager = FindObjectOfType<GameManager>();
+
+            EventManager.AddListener<RoundStartingEvent>(OnRoundStarting);
+            EventManager.AddListener<RoundStartedEvent>(OnRoundStarted);
+            EventManager.AddListener<RoundEndingEvent>(OnRoundEnding);
         }
 
-        message += "\n\n\n\n";
-
-        foreach (Team team in evt.teams)
+        private void OnDestroy()
         {
-            message += team.coloredTeamText + ": " + team.roundsWon + " WINS\n";
+            EventManager.RemoveListener<RoundStartingEvent>(OnRoundStarting);
+            EventManager.RemoveListener<RoundStartedEvent>(OnRoundStarted);
+            EventManager.RemoveListener<RoundEndingEvent>(OnRoundEnding);
         }
 
-        if (evt.gameWinnerTeam != null)
+        public void OnRoundStarting(RoundStartingEvent evt)
         {
-            message = evt.gameWinnerTeam.coloredTeamText + " WINS THE GAME!";
+            int roundNumber = gameManager.roundNumber;
+            gameMessageText.text = "ROUND " + evt.roundNumber;
         }
 
-        gameMessageText.text = message;
+        public void OnRoundStarted(RoundStartedEvent evt)
+        {
+            gameMessageText.text = string.Empty;
+        }
+
+        public void OnRoundEnding(RoundEndingEvent evt)
+        {
+            string message = "DRAW!";
+
+            if (evt.roundWinnerTeam != null)
+            {
+                message = evt.roundWinnerTeam.coloredTeamText + " WINS THE ROUND!";
+            }
+
+            message += "\n\n\n\n";
+
+            foreach (Team team in evt.teams)
+            {
+                message += team.coloredTeamText + ": " + team.roundsWon + " WINS\n";
+            }
+
+            if (evt.gameWinnerTeam != null)
+            {
+                message = evt.gameWinnerTeam.coloredTeamText + " WINS THE GAME!";
+            }
+
+            gameMessageText.text = message;
+        }
     }
 }
