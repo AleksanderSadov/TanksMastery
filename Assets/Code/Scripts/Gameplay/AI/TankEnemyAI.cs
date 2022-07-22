@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tanks.AI
+namespace Tanks.Gameplay
 {
     [RequireComponent(typeof(TankEnemyController))]
     public class TankEnemyAI : MonoBehaviour

@@ -12,7 +12,7 @@ namespace Tanks.UI
 
         public void LaunchMode()
         {
-            DataPersistenceManager.Instance.currentGameMode = gameMode;
+            DataPersistenceManager.Instance.gameMode = gameMode;
             SceneManager.LoadScene(mainGameSceneName);
         }
     }

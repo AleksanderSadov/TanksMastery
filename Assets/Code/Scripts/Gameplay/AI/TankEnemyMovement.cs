@@ -1,9 +1,7 @@
-using System;
-using Tanks.Gameplay;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Tanks.AI
+namespace Tanks.Gameplay
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Rigidbody))]

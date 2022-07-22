@@ -1,7 +1,6 @@
-using Tanks.Gameplay;
 using UnityEngine;
 
-namespace Tanks.AI
+namespace Tanks.Gameplay
 {
     [RequireComponent(typeof(TankEnemyMovement))]
     [RequireComponent(typeof(TankShooting))]

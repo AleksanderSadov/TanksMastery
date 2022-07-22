@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Tanks.Gameplay
 {
@@ -7,30 +8,39 @@ namespace Tanks.Gameplay
         public float dampTime = 0.2f;
         public float screenEdgeBuffer = 4f;
         public float minSize = 6.5f;
-
-        [HideInInspector] public Transform[] targets;
+        public Transform[] targets;
 
         private Camera mainCamera;
         private float zoomSpeed;
         private Vector3 moveVelocity;
         private Vector3 desiredPosition;
+        private TeamManager teamManager;
 
         private void Awake()
         {
             mainCamera = GetComponentInChildren<Camera>();
         }
 
+        private void Start()
+        {
+            teamManager = FindObjectOfType<TeamManager>();
+        }
+
         private void FixedUpdate()
         {
+            SetCameraTargets();
             Move();
             Zoom();
         }
 
-        public void SetStartPositionAndSize()
+        private void SetCameraTargets()
         {
-            FindAveragePosition();
-            transform.position = desiredPosition;
-            mainCamera.orthographicSize = FindRequiredSize();
+            List<TeamMember> allParticipants = teamManager.allParticipants;
+            targets = new Transform[allParticipants.Count];
+            for (int i = 0; i < targets.Length; i++)
+            {
+                targets[i] = allParticipants[i].gameObject.transform;
+            }
         }
 
         private void Move()
@@ -51,7 +61,7 @@ namespace Tanks.Gameplay
 
             for (int i = 0; i < targets.Length; i++)
             {
-                if (!targets[i].gameObject.activeSelf)
+                if (targets[i] == null || !targets[i].gameObject.activeSelf)
                 {
                     continue;
                 }
@@ -87,7 +97,7 @@ namespace Tanks.Gameplay
 
             for (int i = 0; i < targets.Length; i++)
             {
-                if (!targets[i].gameObject.activeSelf)
+                if (targets[i] == null || !targets[i].gameObject.activeSelf)
                 {
                     continue;
                 }

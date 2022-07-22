@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace Tanks.Gameplay
 {
+    public enum PlayerControlsNumber
+    {
+        FIRST = 1,
+        SECOND = 2,
+    }
+
     [RequireComponent(typeof(TankPlayerMovement))]
     [RequireComponent(typeof(TankShooting))]
     public class TankPlayerController : MonoBehaviour
     {
-        public enum PlayerControlsNumber
-        {
-            FIRST = 1,
-            SECOND = 2,
-        }
-
         public PlayerControlsNumber playerControlsNumber = PlayerControlsNumber.FIRST;
 
         private TankPlayerMovement movement;

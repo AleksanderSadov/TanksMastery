@@ -11,14 +11,14 @@ namespace Tanks.Gameplay
         private void Start()
         {
             teamManager = FindObjectOfType<TeamManager>();
-            teamManager.AddMemberToTeam(this, teamAffiliation);
+            teamManager.AddMemberToTeam(this);
         }
 
         private void OnDestroy()
         {
             if (teamManager)
             {
-                teamManager.RemoveMemberFromTeam(this, teamAffiliation);
+                teamManager.RemoveMemberFromTeam(this);
             }
         }
     }

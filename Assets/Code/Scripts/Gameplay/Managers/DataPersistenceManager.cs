@@ -6,7 +6,7 @@ namespace Tanks.Gameplay
     {
         public static DataPersistenceManager Instance;
 
-        public GameMode currentGameMode; 
+        public GameMode gameMode; 
 
         private void Start()
         {
