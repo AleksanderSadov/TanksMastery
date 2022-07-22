@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Tanks.UI
 {
+    [RequireComponent(typeof(TankHealth))]
     public class TankHeatlhUI : MonoBehaviour
     {
         public Slider slider;

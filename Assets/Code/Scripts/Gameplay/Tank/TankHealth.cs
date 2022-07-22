@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Tanks.Gameplay
 {
@@ -6,44 +7,31 @@ namespace Tanks.Gameplay
     {
         public float startingHealth = 100f;
         public float currentHealth;
-        public GameObject explosionPrefab;
 
-        private AudioSource explosionAudio;
-        private ParticleSystem explosionParticles;
-        private bool dead;
-
-        private void Awake()
-        {
-            explosionParticles = Instantiate(explosionPrefab).GetComponent<ParticleSystem>();
-            explosionAudio = explosionParticles.GetComponent<AudioSource>();
-            explosionParticles.gameObject.SetActive(false);
-        }
+        public UnityAction OnDeath;
+        
+        private bool isDead;
 
         private void OnEnable()
         {
             currentHealth = startingHealth;
-            dead = false;
+            isDead = false;
         }
 
         public void TakeDamage(float amount)
         {
             currentHealth -= amount;
 
-            if (currentHealth <= 0f && !dead)
+            if (currentHealth <= 0f && !isDead)
             {
-                OnDeath();
+                Die();
             }
         }
 
-        private void OnDeath()
+        private void Die()
         {
-            dead = true;
-
-            explosionParticles.transform.position = transform.position;
-            explosionParticles.gameObject.SetActive(true);
-            explosionParticles.Play();
-            explosionAudio.Play();
-
+            isDead = true;
+            OnDeath?.Invoke();
             gameObject.SetActive(false);
         }
     }
