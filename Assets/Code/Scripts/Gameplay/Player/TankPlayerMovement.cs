@@ -7,9 +7,8 @@ namespace Tanks.Gameplay
         public float speed = 12f;
         public float turnSpeed = 180f;
 
-        public float movementInputValue;
-        public float turnInputValue;
-
+        [HideInInspector] public float movementInputValue;
+        [HideInInspector] public float turnInputValue;
         [HideInInspector] public Rigidbody rigidBody;
 
         private void Awake()

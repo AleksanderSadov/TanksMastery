@@ -6,7 +6,8 @@ namespace Tanks.Gameplay
     public class TankHealth : MonoBehaviour
     {
         public float startingHealth = 100f;
-        public float currentHealth;
+        
+        [HideInInspector] public float currentHealth;
 
         public UnityAction OnDeath;
         
