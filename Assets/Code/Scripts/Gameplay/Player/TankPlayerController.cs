@@ -17,7 +17,6 @@ namespace Tanks.Gameplay
         private TankPlayerMovement movement;
         private TankShooting shooting;
         private string fireButton;
-
         private string movementAxisName;
         private string turnAxisName;
 
@@ -35,6 +34,36 @@ namespace Tanks.Gameplay
         {
             HandleMovement();
             HandleShooting();
+        }
+
+        public void EnableControls()
+        {
+            if (movement != null)
+            {
+                movement.enabled = true;
+            }
+
+            if (shooting != null)
+            {
+                shooting.enabled = true;
+            }
+
+            this.enabled = true;
+        }
+
+        public void DisableControls()
+        {
+            if (movement != null)
+            {
+                movement.enabled = false;
+            }
+
+            if (shooting != null)
+            {
+                shooting.enabled = false;
+            }
+
+            this.enabled = false;
         }
 
         private void HandleMovement()

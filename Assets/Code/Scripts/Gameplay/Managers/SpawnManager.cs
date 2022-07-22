@@ -126,7 +126,7 @@ namespace Tanks.Gameplay
         {
             foreach (TankPlayerController playerController in teamManager.players)
             {
-                playerController.enabled = true;
+                playerController.EnableControls();
             }
         }
 
@@ -134,7 +134,7 @@ namespace Tanks.Gameplay
         {
             foreach (TankPlayerController playerController in teamManager.players)
             {
-                playerController.enabled = false;
+                playerController.DisableControls();
             }
         }
 
