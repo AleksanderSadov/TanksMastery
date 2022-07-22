@@ -1,4 +1,4 @@
-using Tanks.Shared;
+using Tanks.Gameplay;
 using UnityEngine;
 
 namespace Tanks.UI

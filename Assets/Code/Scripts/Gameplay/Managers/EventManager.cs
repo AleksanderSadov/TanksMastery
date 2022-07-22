@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tanks.Shared
+namespace Tanks.Gameplay
 {
     public class GameEvent
     {

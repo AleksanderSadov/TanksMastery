@@ -1,5 +1,4 @@
 using Tanks.Gameplay;
-using Tanks.Shared;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ public class GameProgressUI : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
 
         EventManager.AddListener<RoundStartingEvent>(OnRoundStarting);
+        EventManager.AddListener<RoundStartedEvent>(OnRoundStarted);
         EventManager.AddListener<RoundEndingEvent>(OnRoundEnding);
     }
 
@@ -25,27 +25,30 @@ public class GameProgressUI : MonoBehaviour
         gameMessageText.text = "ROUND " + evt.roundNumber;
     }
 
+    public void OnRoundStarted(RoundStartedEvent evt)
+    {
+        gameMessageText.text = string.Empty;
+    }
+
     public void OnRoundEnding(RoundEndingEvent evt)
     {
-        coloredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">PLAYER " + playerNumber + "</color>";
-
         string message = "DRAW!";
 
-        if (roundWinner != null)
+        if (evt.roundWinnerTeam != null)
         {
-            message = roundWinner.coloredPlayerText + " WINS THE ROUND!";
+            message = evt.roundWinnerTeam.coloredTeamText + " WINS THE ROUND!";
         }
 
         message += "\n\n\n\n";
 
-        for (int i = 0; i < playersTanks.Length; i++)
+        foreach (Team team in evt.teams)
         {
-            message += playersTanks[i].coloredPlayerText + ": " + playersTanks[i].wins + " WINS\n";
+            message += team.coloredTeamText + ": " + team.roundsWon + " WINS\n";
         }
 
-        if (gameWinner != null)
+        if (evt.gameWinnerTeam != null)
         {
-            message = gameWinner.coloredPlayerText + " WINS THE GAME!";
+            message = evt.gameWinnerTeam.coloredTeamText + " WINS THE GAME!";
         }
 
         gameMessageText.text = message;

@@ -2,8 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using TMPro;
-using UnityEngine.Events;
-using Tanks.Shared;
+using System.Collections.Generic;
 
 namespace Tanks.Gameplay
 {
@@ -17,51 +16,54 @@ namespace Tanks.Gameplay
         public CameraControl cameraControl;
         public TextMeshProUGUI messageText;
         public GameObject tankPrefab;
-        public TankManager[] tanks;
+        public TankManager[] players;
 
-        public TankManager roundWinner { get; private set; }
-        public TankManager gameWinner { get; private set; }
+        public Team roundWinnerTeam { get; private set; }
+        public Team gameWinnerTeam { get; private set; }
         public int roundNumber { get; private set; }
 
         private WaitForSeconds startWait;
         private WaitForSeconds endWait;
+        private TeamManager teamManager;
 
         private void Start()
         {
             Physics.defaultMaxDepenetrationVelocity = MAX_DEPENETRATION_VELOCITY;
 
-
+            teamManager = FindObjectOfType<TeamManager>();
 
             startWait = new WaitForSeconds(startDelay);
             endWait = new WaitForSeconds(endDelay);
 
-            SpawnAllTanks();
+            SpawnPlayersTanks();
             SetCameraTargets();
 
             StartCoroutine(GameLoop());
         }
 
-        private void SpawnAllTanks()
+        private void SpawnPlayersTanks()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                tanks[i].instance = Instantiate(
+                players[i].instance = Instantiate(
                     tankPrefab,
-                    tanks[i].spawnPoint.position,
-                    tanks[i].spawnPoint.rotation
+                    players[i].spawnPoint.position,
+                    players[i].spawnPoint.rotation
                 ) as GameObject;
-                tanks[i].playerNumber = i + 1;
-                tanks[i].Setup();
+
+                players[i].instance.GetComponent<TeamMember>().teamAffiliation =
+                    i == 0 ? TEAM_AFFILIATION.TEAM_ONE : TEAM_AFFILIATION.TEAM_TWO;
+                players[i].Setup();
             }
         }
 
         private void SetCameraTargets()
         {
-            Transform[] targets = new Transform[tanks.Length];
+            Transform[] targets = new Transform[players.Length];
 
             for (int i = 0; i < targets.Length; i++)
             {
-                targets[i] = tanks[i].instance.transform;
+                targets[i] = players[i].instance.transform;
             }
 
             cameraControl.targets = targets;
@@ -73,7 +75,7 @@ namespace Tanks.Gameplay
             yield return StartCoroutine(RoundPlaying());
             yield return StartCoroutine(RoundEnding());
 
-            if (gameWinner != null)
+            if (gameWinnerTeam != null)
             {
                 SceneManager.LoadScene(0);
             }
@@ -85,25 +87,25 @@ namespace Tanks.Gameplay
 
         private IEnumerator RoundStarting()
         {
-            ResetAllTanks();
-            DisableTankControl();
-            cameraControl.SetStartPositionAndSize();
-
             roundNumber++;
             RoundStartingEvent roundStartingEvent = Events.RoundStartingEvent;
             roundStartingEvent.roundNumber = roundNumber;
             EventManager.Broadcast(Events.RoundStartingEvent);
+
+            ResetAllTanks();
+            DisableTankControl();
+            cameraControl.SetStartPositionAndSize();
 
             yield return startWait;
         }
 
         private IEnumerator RoundPlaying()
         {
+            EventManager.Broadcast(Events.RoundStartedEvent);
+
             EnableTankControl();
 
-            messageText.text = string.Empty;
-
-            while (!OneTankLeft())
+            while (!IsRoundOver())
             {
                 yield return null;
             }
@@ -113,54 +115,62 @@ namespace Tanks.Gameplay
         {
             DisableTankControl();
 
-            roundWinner = GetRoundWinner();
-            if (roundWinner != null)
+            roundWinnerTeam = GetRoundWinnerTeam();
+            if (roundWinnerTeam != null)
             {
-                roundWinner.wins++;
+                roundWinnerTeam.roundsWon++;
             }
+            gameWinnerTeam = GetGameWinnerTeam();
 
-            gameWinner = GetGameWinner();
-
+            RoundEndingEvent roundEndingEvent = Events.RoundEndingEvent;
+            roundEndingEvent.teams = teamManager.teams;
+            roundEndingEvent.roundWinnerTeam = roundWinnerTeam;
+            roundEndingEvent.gameWinnerTeam = gameWinnerTeam;
             EventManager.Broadcast(Events.RoundEndingEvent);
 
             yield return endWait;
         }
 
-        private bool OneTankLeft()
+        private bool IsRoundOver()
         {
-            int numberTanksLeft = 0;
+            List<TeamMember> allParticipants = teamManager.GetAllParticipants();
 
-            for (int i = 0; i < tanks.Length; i++)
+            int numberParticipantsAlive = 0;
+            foreach (TeamMember participant in allParticipants)
             {
-                if (tanks[i].instance.activeSelf)
+                if (participant.gameObject.activeSelf)
                 {
-                    numberTanksLeft++;
+                    numberParticipantsAlive++;
                 }
             }
 
-            return numberTanksLeft <= 1;
+            return numberParticipantsAlive <= 1;
         }
 
-        private TankManager GetRoundWinner()
+        private Team GetRoundWinnerTeam()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            List<TeamMember> allParticipants = teamManager.GetAllParticipants();
+
+            foreach (TeamMember participant in allParticipants)
             {
-                if (tanks[i].instance.activeSelf)
+                if (participant.gameObject.activeSelf)
                 {
-                    return tanks[i];
+                    return teamManager.GetTeam(participant.teamAffiliation);
                 }
             }
 
             return null;
         }
 
-        private TankManager GetGameWinner()
+        private Team GetGameWinnerTeam()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            List<Team> teams = teamManager.teams;
+
+            foreach (Team team in teams)
             {
-                if (tanks[i].wins == numberRoundsToWin)
+                if (team.roundsWon >= numberRoundsToWin)
                 {
-                    return tanks[i];
+                    return team;
                 }
             }
 
@@ -169,25 +179,25 @@ namespace Tanks.Gameplay
 
         private void ResetAllTanks()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                tanks[i].Reset();
+                players[i].Reset();
             }
         }
 
         private void EnableTankControl()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                tanks[i].EnableControl();
+                players[i].EnableControl();
             }
         }
 
         private void DisableTankControl()
         {
-            for (int i = 0; i < tanks.Length; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                tanks[i].DisableControl();
+                players[i].DisableControl();
             }
         }
     }

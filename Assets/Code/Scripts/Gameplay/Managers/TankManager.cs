@@ -6,12 +6,17 @@ namespace Tanks.Gameplay
     [Serializable]
     public class TankManager
     {
-        public Color playerColor;
+        public enum PlayerControlsNumber
+        {
+            FIRST = 1,
+            SECOND = 2,
+        }
+
+        public PlayerControlsNumber playerControlsNumber;
+        public TEAM_AFFILIATION teamAffiliation;
         public Transform spawnPoint;
 
-        [HideInInspector] public int playerNumber;
         [HideInInspector] public GameObject instance;
-        [HideInInspector] public int wins;
 
         private TankMovement movement;
         private TankShooting shooting;
@@ -23,15 +28,8 @@ namespace Tanks.Gameplay
             shooting = instance.GetComponent<TankShooting>();
             canvasGameObject = instance.GetComponentInChildren<Canvas>().gameObject;
 
-            movement.playerNumber = playerNumber;
-            shooting.playerNumber = playerNumber;
-
-            MeshRenderer[] renderers = instance.GetComponentsInChildren<MeshRenderer>();
-
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].material.color = playerColor;
-            }
+            movement.playerNumber = (int) playerControlsNumber;
+            shooting.playerNumber = (int) playerControlsNumber;
         }
 
         public void DisableControl()

@@ -1,8 +1,11 @@
-namespace Tanks.Shared
+using System.Collections.Generic;
+
+namespace Tanks.Gameplay
 {
     public static class Events
     {
         public static RoundStartingEvent RoundStartingEvent = new RoundStartingEvent();
+        public static RoundStartedEvent RoundStartedEvent = new RoundStartedEvent();
         public static RoundEndingEvent RoundEndingEvent = new RoundEndingEvent();
     }
 
@@ -11,11 +14,13 @@ namespace Tanks.Shared
         public int roundNumber;
     }
 
+    public class RoundStartedEvent : GameEvent { }
+
     public class RoundEndingEvent : GameEvent
     {
-        TankManager[] playersTanks;
-        TankManager roundWinner;
-        TankManager gameWinner;
+        public List<Team> teams;
+        public Team roundWinnerTeam;
+        public Team gameWinnerTeam;
     }
 }
 

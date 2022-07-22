@@ -1,4 +1,4 @@
-using Tanks.Shared;
+using Tanks.Gameplay;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
