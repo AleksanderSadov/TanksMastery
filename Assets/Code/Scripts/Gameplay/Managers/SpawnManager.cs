@@ -12,8 +12,8 @@ namespace Tanks.Gameplay
         public GameObject teamTwoParent;
         public int numberPlayersInTeamOne = 1;
         public int numberPlayersInTeamTwo = 0;
-        public int numberBotsInTeamOne = 1;
-        public int numberBotsInTeamTwo = 0;
+        public int numberBotsInTeamOne = 0;
+        public int numberBotsInTeamTwo = 1;
 
         private TeamManager teamManager;
         private List<SpawnPoint> spawnPoints;
@@ -128,7 +128,7 @@ namespace Tanks.Gameplay
             TankPlayerController player = Instantiate(
                 tankPlayerPrefab,
                 spawnPoint.transform.position,
-                tankPlayerPrefab.transform.rotation,
+                spawnPoint.transform.rotation,
                 GetHierarchySpawnParent(teamAffiliation).transform
             );
             player.playerControlsNumber = playerControlsNumber;
@@ -143,7 +143,7 @@ namespace Tanks.Gameplay
             TankEnemyController enemy = Instantiate(
                 tankEnemyPrefab,
                 spawnPoint.transform.position,
-                tankPlayerPrefab.transform.rotation,
+                spawnPoint.transform.rotation,
                 GetHierarchySpawnParent(teamAffiliation).transform
             );
             enemy.GetComponent<TeamMember>().teamAffiliation = teamAffiliation;
