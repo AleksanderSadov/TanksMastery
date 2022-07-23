@@ -20,14 +20,10 @@ namespace Tanks.Gameplay
         private string movementAxisName;
         private string turnAxisName;
 
-        private void Start()
+        private void Awake()
         {
             movement = GetComponent<TankPlayerMovement>();
             shooting = GetComponent<TankShooting>();
-
-            movementAxisName = GameConstants.AXIS_NAME_PLAYER_VERTICAL + (int) playerControlsNumber;
-            turnAxisName = GameConstants.AXIS_NAME_PLAYER_HORIZONTAL + (int) playerControlsNumber;
-            fireButton = GameConstants.AXIS_NAME_PLAYER_FIRE + (int) playerControlsNumber;
         }
 
         private void Update()
@@ -47,8 +43,6 @@ namespace Tanks.Gameplay
             {
                 shooting.enabled = true;
             }
-
-            this.enabled = true;
         }
 
         public void DisableControls()
@@ -62,12 +56,14 @@ namespace Tanks.Gameplay
             {
                 shooting.enabled = false;
             }
-
-            this.enabled = false;
         }
 
         private void HandleMovement()
         {
+            movementAxisName = GameConstants.AXIS_NAME_PLAYER_VERTICAL + (int)playerControlsNumber;
+            turnAxisName = GameConstants.AXIS_NAME_PLAYER_HORIZONTAL + (int)playerControlsNumber;
+            fireButton = GameConstants.AXIS_NAME_PLAYER_FIRE + (int)playerControlsNumber;
+
             movement.movementInputValue = Input.GetAxis(movementAxisName);
             movement.turnInputValue = Input.GetAxis(turnAxisName);
         }
