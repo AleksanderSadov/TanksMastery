@@ -91,18 +91,7 @@ namespace Tanks.Gameplay
 
         private bool IsRoundOver()
         {
-            List<TeamMember> allParticipants = teamManager.allParticipants;
-
-            int numberParticipantsAlive = 0;
-            foreach (TeamMember participant in allParticipants)
-            {
-                if (participant.gameObject.activeSelf)
-                {
-                    numberParticipantsAlive++;
-                }
-            }
-
-            return numberParticipantsAlive <= 1;
+            return teamManager.teams[0].isAllMembersDead() || teamManager.teams[1].isAllMembersDead();
         }
 
         private Team GetRoundWinnerTeam()

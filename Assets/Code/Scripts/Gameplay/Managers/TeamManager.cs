@@ -146,5 +146,19 @@ namespace Tanks.Gameplay
                 renderers[i].material.color = teamColor;
             }
         }
+
+        public bool isAllMembersDead()
+        {
+            int numberMembersAlive = 0;
+            foreach (TeamMember member in members)
+            {
+                if (member.gameObject.activeSelf)
+                {
+                    numberMembersAlive++;
+                }
+            }
+
+            return numberMembersAlive == 0;
+        }
     }
 }
