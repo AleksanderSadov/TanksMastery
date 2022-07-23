@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Tanks.Gameplay
 {
-    [RequireComponent(typeof(GameManager))]
     [RequireComponent(typeof(TeamManager))]
     public class SpawnManager : MonoBehaviour
     {
@@ -11,18 +10,26 @@ namespace Tanks.Gameplay
         public TankEnemyController tankEnemyPrefab;
         public GameObject teamOneParent;
         public GameObject teamTwoParent;
+        public int numberPlayersInTeamOne = 1;
+        public int numberPlayersInTeamTwo = 0;
+        public int numberBotsInTeamOne = 1;
+        public int numberBotsInTeamTwo = 0;
 
-        private GameMode gameMode;
-        private GameManager gameManager;
         private TeamManager teamManager;
-        private Dictionary<TeamAffiliation, List<SpawnPoint>> spawnPoints;
+        private List<SpawnPoint> spawnPoints;
 
         private void Awake()
         {
-            gameManager = GetComponent<GameManager>();
             teamManager = GetComponent<TeamManager>();
 
-            gameMode = gameManager.gameMode;
+            if (DataPersistenceManager.Instance != null)
+            {
+                numberPlayersInTeamOne = DataPersistenceManager.Instance.numberPlayersInTeamOne;
+                numberPlayersInTeamTwo = DataPersistenceManager.Instance.numberPlayersInTeamTwo;
+                numberBotsInTeamOne = DataPersistenceManager.Instance.numberBotsInTeamOne;
+                numberBotsInTeamTwo = DataPersistenceManager.Instance.numberBotsInTeamTwo;
+            }
+
             GetSpawnPoints();
 
             EventManager.AddListener<RoundStartingEvent>(OnRoundStarting);
@@ -40,7 +47,10 @@ namespace Tanks.Gameplay
         private void OnRoundStarting(RoundStartingEvent evt)
         {
             DestroyExistingTanks();
+            ResetSpawnPoints();
+
             SpawnTanks();
+
             DisableEnemyAI();
             DisablePlayersControls();
         }
@@ -65,57 +75,114 @@ namespace Tanks.Gameplay
             }
         }
 
-        private void SpawnTanks()
+        private void ResetSpawnPoints()
         {
-            switch (gameMode)
+            foreach (SpawnPoint spawnPoint in spawnPoints)
             {
-                case GameMode.SOLO_1VS1:
-                    SpawnTanksSolo1VS1();
-                    break;
+                spawnPoint.isOccupied = false;
             }
         }
 
-        private void SpawnTanksSolo1VS1()
+        private void SpawnTanks()
         {
-            SpawnPoint spawnPoint = GetRandomFreeSpawnPoint(TeamAffiliation.TEAM_ONE);
+            if (numberPlayersInTeamOne >= 1)
+            {
+                SpawnPlayer(TeamAffiliation.TEAM_ONE, PlayerControlsNumber.FIRST);
+            }
+
+            if (numberPlayersInTeamOne >= 2)
+            {
+                SpawnPlayer(TeamAffiliation.TEAM_ONE, PlayerControlsNumber.SECOND);
+            }
+
+            if (numberPlayersInTeamTwo >= 1)
+            {
+                SpawnPlayer(TeamAffiliation.TEAM_TWO, PlayerControlsNumber.FIRST);
+            }
+
+            if (numberPlayersInTeamTwo >= 2)
+            {
+                SpawnPlayer(TeamAffiliation.TEAM_TWO, PlayerControlsNumber.SECOND);
+            }
+
+            if (numberBotsInTeamOne > 0)
+            {
+                for (int i = 0; i < numberBotsInTeamOne; i++)
+                {
+                    SpawnBot(TeamAffiliation.TEAM_ONE);
+                }
+            }
+
+            if (numberBotsInTeamTwo > 0)
+            {
+                for (int i = 0; i < numberBotsInTeamTwo; i++)
+                {
+                    SpawnBot(TeamAffiliation.TEAM_TWO);
+                }
+            }
+        }
+
+        private void SpawnPlayer(TeamAffiliation teamAffiliation, PlayerControlsNumber playerControlsNumber)
+        {
+            SpawnPoint spawnPoint = GetRandomFreeSpawnPoint(teamAffiliation);
             TankPlayerController player = Instantiate(
                 tankPlayerPrefab,
                 spawnPoint.transform.position,
                 tankPlayerPrefab.transform.rotation,
-                teamOneParent.transform
+                GetHierarchySpawnParent(teamAffiliation).transform
             );
-            player.playerControlsNumber = PlayerControlsNumber.FIRST;
-            player.GetComponent<TeamMember>().teamAffiliation = TeamAffiliation.TEAM_ONE;
+            player.playerControlsNumber = playerControlsNumber;
+            player.GetComponent<TeamMember>().teamAffiliation = teamAffiliation;
             teamManager.AddMemberToTeam(player.GetComponent<TeamMember>());
+            spawnPoint.isOccupied = true;
+        }
 
-            spawnPoint = GetRandomFreeSpawnPoint(TeamAffiliation.TEAM_TWO);
+        private void SpawnBot(TeamAffiliation teamAffiliation)
+        {
+            SpawnPoint spawnPoint = GetRandomFreeSpawnPoint(teamAffiliation);
             TankEnemyController enemy = Instantiate(
                 tankEnemyPrefab,
                 spawnPoint.transform.position,
                 tankPlayerPrefab.transform.rotation,
-                teamTwoParent.transform
+                GetHierarchySpawnParent(teamAffiliation).transform
             );
-            enemy.GetComponent<TeamMember>().teamAffiliation = TeamAffiliation.TEAM_TWO;
+            enemy.GetComponent<TeamMember>().teamAffiliation = teamAffiliation;
             teamManager.AddMemberToTeam(enemy.GetComponent<TeamMember>());
+            spawnPoint.isOccupied = true;
+        }
+
+        private GameObject GetHierarchySpawnParent(TeamAffiliation teamAffiliation)
+        {
+            GameObject spawnParent = null;
+
+            switch (teamAffiliation)
+            {
+                case TeamAffiliation.TEAM_ONE:
+                    spawnParent = teamOneParent;
+                    break;
+                case TeamAffiliation.TEAM_TWO:
+                    spawnParent = teamTwoParent;
+                    break;
+            }
+
+            return spawnParent;
         }
 
         private void GetSpawnPoints()
         {
-            spawnPoints = new Dictionary<TeamAffiliation, List<SpawnPoint>>();
-            spawnPoints.Add(TeamAffiliation.TEAM_ONE, new List<SpawnPoint>());
-            spawnPoints.Add(TeamAffiliation.TEAM_TWO, new List<SpawnPoint>());
+            spawnPoints = new List<SpawnPoint>();
 
             SpawnPoint[] allSpawnPoints = FindObjectsOfType<SpawnPoint>();
             foreach (SpawnPoint spawnPoint in allSpawnPoints)
             {
-                spawnPoints[spawnPoint.teamAffiliation].Add(spawnPoint);
+                spawnPoints.Add(spawnPoint);
             }
         }
 
         private SpawnPoint GetRandomFreeSpawnPoint(TeamAffiliation teamAffiliation)
         {
-            List<SpawnPoint> freeSpawnPoints = spawnPoints[teamAffiliation].FindAll(
-                spawnPoint => spawnPoint.teamAffiliation == teamAffiliation
+            List<SpawnPoint> freeSpawnPoints = spawnPoints.FindAll(
+                spawnPoint => !spawnPoint.isOccupied && spawnPoint.teamAffiliation == teamAffiliation
             );
             int randomIndex = Random.Range(0, freeSpawnPoints.Count);
 

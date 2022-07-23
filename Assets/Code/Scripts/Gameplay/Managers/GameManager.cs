@@ -5,13 +5,6 @@ using System.Collections.Generic;
 
 namespace Tanks.Gameplay
 {
-    public enum GameMode
-    {
-        SOLO_1VS1,
-        TEAM_2VS2,
-        PVP_1VS1,
-    }
-
     public class GameManager : MonoBehaviour
     {
         const float MAX_DEPENETRATION_VELOCITY = float.PositiveInfinity;
@@ -21,7 +14,6 @@ namespace Tanks.Gameplay
         public float endDelay = 3f;
         public CameraControl cameraControl;
         public GameObject playerTankPrefab;
-        public GameMode gameMode = GameMode.SOLO_1VS1;
 
         public Team roundWinnerTeam { get; private set; }
         public Team gameWinnerTeam { get; private set; }
@@ -33,11 +25,6 @@ namespace Tanks.Gameplay
 
         private void Start()
         {
-            if (DataPersistenceManager.Instance != null)
-            {
-                gameMode = DataPersistenceManager.Instance.gameMode;
-            }
-
             Physics.defaultMaxDepenetrationVelocity = MAX_DEPENETRATION_VELOCITY;
 
             teamManager = FindObjectOfType<TeamManager>();

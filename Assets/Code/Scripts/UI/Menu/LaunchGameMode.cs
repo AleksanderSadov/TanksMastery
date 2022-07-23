@@ -8,11 +8,22 @@ namespace Tanks.UI
     {
         private const string mainGameSceneName = "MainGame";
 
-        public GameMode gameMode;
+        [Range(0, 2)]
+        public int numberPlayersInTeamOne = 1;
+        [Range(0, 4)]
+        public int numberBotsInTeamOne = 0;
+        [Range(0, 2)]
+        public int numberPlayersInTeamTwo = 0;
+        [Range(0, 4)]
+        public int numberBotsInTeamTwo = 1;
 
         public void LaunchMode()
         {
-            DataPersistenceManager.Instance.gameMode = gameMode;
+            DataPersistenceManager.Instance.numberPlayersInTeamOne = numberPlayersInTeamOne;
+            DataPersistenceManager.Instance.numberPlayersInTeamTwo = numberPlayersInTeamTwo;
+            DataPersistenceManager.Instance.numberBotsInTeamOne = numberBotsInTeamOne;
+            DataPersistenceManager.Instance.numberBotsInTeamTwo = numberBotsInTeamTwo;
+
             SceneManager.LoadScene(mainGameSceneName);
         }
     }

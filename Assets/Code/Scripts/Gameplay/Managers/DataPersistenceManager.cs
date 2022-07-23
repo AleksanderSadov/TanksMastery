@@ -6,7 +6,10 @@ namespace Tanks.Gameplay
     {
         public static DataPersistenceManager Instance;
 
-        public GameMode gameMode; 
+        public int numberPlayersInTeamOne = 1;
+        public int numberPlayersInTeamTwo = 0;
+        public int numberBotsInTeamOne = 1;
+        public int numberBotsInTeamTwo = 0;
 
         private void Start()
         {
