@@ -97,7 +97,7 @@ namespace Tanks.Gameplay
 
             if (numberPlayersInTeamTwo >= 1)
             {
-                SpawnPlayer(TeamAffiliation.TEAM_TWO, PlayerControlsNumber.FIRST);
+                SpawnPlayer(TeamAffiliation.TEAM_TWO, PlayerControlsNumber.SECOND);
             }
 
             if (numberPlayersInTeamTwo >= 2)
