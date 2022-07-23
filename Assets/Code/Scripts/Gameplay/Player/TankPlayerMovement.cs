@@ -66,5 +66,10 @@ namespace Tanks.Gameplay
 
             return false;
         }
+
+        public override void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius)
+        {
+            rigidBody.AddExplosionForce(explosionForce, explosionPosition, explosionRadius);
+        }
     }
 }

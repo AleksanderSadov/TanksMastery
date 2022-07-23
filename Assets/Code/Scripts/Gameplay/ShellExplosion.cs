@@ -30,7 +30,11 @@ namespace Tanks.Gameplay
                     continue;
                 }
 
-                targetRigidbody.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+                TankMovement tankMovement = targetRigidbody.GetComponent<TankMovement>();
+                if (tankMovement != null)
+                {
+                    tankMovement.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+                }
 
                 TankHealth targetHeatlh = targetRigidbody.GetComponent<TankHealth>();
                 if (!targetHeatlh)

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,7 +31,7 @@ namespace Tanks.Gameplay
                 transform.position = spawnPosition;
                 navMeshAgent.enabled = true;
             }
-        }
+        }   
 
         public void SetNavDestination(Vector3 destination)
         {
@@ -75,6 +76,41 @@ namespace Tanks.Gameplay
         public override bool IsTurning()
         {
             return isTurning;
+        }
+
+        public override void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius)
+        {
+            if (rigidBody.isKinematic)
+            {
+                rigidBody.isKinematic = false;
+            }
+
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.enabled = false;
+            }
+
+            rigidBody.AddExplosionForce(explosionForce, explosionPosition, explosionRadius);
+
+            StartCoroutine(CheckExplosionForceEnded());
+        }
+
+        private IEnumerator CheckExplosionForceEnded()
+        {
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+
+            yield return new WaitUntil(() => rigidBody.velocity.magnitude < 0.5f);
+
+            if (!rigidBody.isKinematic)
+            {
+                rigidBody.isKinematic = true;
+            }
+
+            if (!navMeshAgent.enabled)
+            {
+                navMeshAgent.enabled = true;
+            }
         }
 
         private bool FindSpawnPosition(Vector3 position, out Vector3 result)
