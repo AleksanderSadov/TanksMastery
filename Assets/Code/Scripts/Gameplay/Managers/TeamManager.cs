@@ -12,6 +12,7 @@ namespace Tanks.Gameplay
 
     public class TeamManager : MonoBehaviour
     {
+        public TankPlayerController tankPlayerPrefab;
         public List<Team> teams;
         public List<TeamMember> allParticipants = new List<TeamMember>();
         public List<TankPlayerController> players = new List<TankPlayerController>();
@@ -112,6 +113,37 @@ namespace Tanks.Gameplay
             }
 
             return null;
+        }
+
+        public void TryReplaceBotWithPlayer(TeamMember playerMember)
+        {
+            TankPlayerController playerController = playerMember.GetComponent<TankPlayerController>();
+            TeamAffiliation playerAffiliation = playerMember.teamAffiliation;
+            Team playerTeam = GetTeam(playerAffiliation);
+
+            foreach (TeamMember teamMember in playerTeam.members)
+            {
+                if (!teamMember.gameObject.activeSelf)
+                {
+                    continue;
+                }
+
+                if (teamMember.TryGetComponent(out TankEnemyController enemyController))
+                {
+                    teamMember.gameObject.SetActive(false);
+
+                    TankPlayerController player = Instantiate(
+                        tankPlayerPrefab,
+                        enemyController.gameObject.transform.position,
+                        enemyController.gameObject.transform.rotation,
+                        enemyController.gameObject.transform.parent
+                    );
+                    player.playerControlsNumber = playerController.playerControlsNumber;
+                    player.GetComponent<TeamMember>().teamAffiliation = playerAffiliation;
+
+                    return;
+                }
+            }
         }
     }
 

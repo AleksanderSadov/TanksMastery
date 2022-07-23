@@ -91,7 +91,9 @@ namespace Tanks.Gameplay
 
         private bool IsRoundOver()
         {
-            return teamManager.teams[0].isAllMembersDead() || teamManager.teams[1].isAllMembersDead();
+            return 
+                teamManager.GetTeam(TeamAffiliation.TEAM_ONE).isAllMembersDead()
+                || teamManager.GetTeam(TeamAffiliation.TEAM_TWO).isAllMembersDead();
         }
 
         private Team GetRoundWinnerTeam()
