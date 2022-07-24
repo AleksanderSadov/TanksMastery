@@ -9,6 +9,7 @@ namespace Tanks.Gameplay
         {
             FindTarget,
             Follow,
+            Attack,
         }
 
         public AIState aiState;
@@ -38,6 +39,16 @@ namespace Tanks.Gameplay
                     }
                     break;
                 case AIState.Follow:
+                    if (enemyController.isTargetInAttackRange)
+                    {
+                        aiState = AIState.Attack;
+                    }
+                    break;
+                case AIState.Attack:
+                    if (!enemyController.isTargetInAttackRange)
+                    {
+                        aiState = AIState.FindTarget;
+                    }
                     break;
             }
         }
@@ -51,6 +62,10 @@ namespace Tanks.Gameplay
                     break;
                 case AIState.Follow:
                     enemyController.FollowTarget(enemyController.currentTarget);
+                    break;
+                case AIState.Attack:
+                    enemyController.OrientTowards(enemyController.currentTarget.transform.position);
+                    enemyController.TryAttack();
                     break;
             }
         }

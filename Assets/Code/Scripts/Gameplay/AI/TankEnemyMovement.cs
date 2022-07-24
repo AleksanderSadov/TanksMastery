@@ -8,8 +8,6 @@ namespace Tanks.Gameplay
     [RequireComponent(typeof(Rigidbody))]
     public class TankEnemyMovement : TankMovement
     {
-        public float turnSpeed = 180f;
-
         private bool isTurning = false;
         private NavMeshAgent navMeshAgent;
         private Rigidbody rigidBody;
@@ -49,7 +47,7 @@ namespace Tanks.Gameplay
             if (lookDirection.sqrMagnitude != 0f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * navMeshAgent.angularSpeed);
                 isTurning = true;
             }
         }

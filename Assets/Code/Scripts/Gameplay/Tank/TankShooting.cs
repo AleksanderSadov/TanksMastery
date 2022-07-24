@@ -12,7 +12,9 @@ namespace Tanks.Gameplay
         public float maxChargeTime = 0.75f;
 
         [HideInInspector] public float currentLaunchForce;
-        [HideInInspector] public bool isFired;
+        [HideInInspector] public float targetLaunchForce;
+        [HideInInspector] public bool isFired = false;
+        [HideInInspector] public bool isCharging = false;
         [HideInInspector] public float chargeSpeed;
 
         public UnityAction OnStartCharging;
@@ -25,17 +27,22 @@ namespace Tanks.Gameplay
 
         private void Start()
         {
+            targetLaunchForce = maxLaunchForce;
             chargeSpeed = (maxLaunchForce - minLaunchForce) / maxChargeTime;
         }
 
         private void Update()
         {
-            CheckFireAtMaxForce();
+            if (isCharging)
+            {
+                CheckFireAtTargetLaunchForce();
+            }
         }
 
         public void StartCharging()
         {
             isFired = false;
+            isCharging = true;
             currentLaunchForce = minLaunchForce;
             OnStartCharging?.Invoke();
         }
@@ -48,18 +55,34 @@ namespace Tanks.Gameplay
         public void Fire()
         {
             isFired = true;
+            isCharging = false;
             Rigidbody shellInstance = Instantiate(shell, fireTransform.position, fireTransform.rotation) as Rigidbody;
             shellInstance.velocity = currentLaunchForce * fireTransform.forward;
             currentLaunchForce = minLaunchForce;
             OnFired?.Invoke();
         }
 
-        private void CheckFireAtMaxForce()
+        public void ResetCharge()
+        {
+            currentLaunchForce = minLaunchForce;
+            targetLaunchForce = maxLaunchForce;
+            isCharging = false;
+        }
+
+        private void CheckFireAtTargetLaunchForce()
         {
             if (currentLaunchForce >= maxLaunchForce && !isFired)
             {
                 currentLaunchForce = maxLaunchForce;
                 Fire();
+                return;
+            }
+
+            if (currentLaunchForce >= targetLaunchForce && !isFired)
+            {
+                currentLaunchForce = targetLaunchForce;
+                Fire();
+                return;
             }
         }
     }
