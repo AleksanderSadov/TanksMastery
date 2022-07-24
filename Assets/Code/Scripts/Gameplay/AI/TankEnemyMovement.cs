@@ -39,6 +39,14 @@ namespace Tanks.Gameplay
             }
         }
 
+        public void ResetDestination()
+        {
+            if (navMeshAgent && navMeshAgent.isOnNavMesh)
+            {
+                navMeshAgent.ResetPath();
+            }
+        }
+
         public void OrientTowards(Vector3 lookPosition)
         {
             isTurning = false;

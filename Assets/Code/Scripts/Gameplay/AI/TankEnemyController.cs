@@ -34,20 +34,10 @@ namespace Tanks.Gameplay
             }
         }
 
-        public void FindTarget()
-        {
-            currentTarget = findTargetSensor.FindRandomTarget();
-        }
-
-        public void FollowTarget(GameObject target)
-        {
-            movement.SetNavDestination(target.transform.position);
-        }
-
-        public void OrientTowards(Vector3 lookPosition)
-        {
-            movement.OrientTowards(lookPosition);
-        }
+        public void FindTarget() => currentTarget = findTargetSensor.FindRandomTarget();
+        public void FollowTarget(GameObject target) => movement.SetNavDestination(target.transform.position);
+        public void ResetDestination() => movement.ResetDestination();
+        public void OrientTowards(Vector3 lookPosition) => movement.OrientTowards(lookPosition);
 
         public void TryAttack()
         {

@@ -42,6 +42,7 @@ namespace Tanks.Gameplay
                     if (enemyController.isTargetInAttackRange)
                     {
                         aiState = AIState.Attack;
+                        enemyController.ResetDestination();
                     }
                     break;
                 case AIState.Attack:
