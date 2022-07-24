@@ -45,7 +45,11 @@ namespace Tanks.Gameplay
                     }
                     break;
                 case AIState.Attack:
-                    if (!enemyController.isTargetInAttackRange)
+                    if (
+                        enemyController.currentTarget == null
+                        || !enemyController.currentTarget.gameObject.activeSelf
+                        || !enemyController.isTargetInAttackRange
+                    )
                     {
                         aiState = AIState.FindTarget;
                     }
