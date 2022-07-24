@@ -11,14 +11,16 @@ namespace Tanks.Gameplay
         public float maxLaunchForce = 30f;
         public float maxChargeTime = 0.75f;
         public float reloadTime = 0.75f;
+        public AnimationCurve optimalForceOverDistance;
 
-        [HideInInspector] public float currentLaunchForce;
-        [HideInInspector] public float targetLaunchForce;
-        [HideInInspector] public bool isFired = false;
-        [HideInInspector] public bool isCharging = false;
-        [HideInInspector] public bool isReloading = false;
-        [HideInInspector] public float chargeSpeed;
-        [HideInInspector] public float lastTimeFired = 0;
+        [Header("Debug")]
+        public float currentLaunchForce;
+        public float targetLaunchForce;
+        public bool isFired = false;
+        public bool isCharging = false;
+        public bool isReloading = false;
+        public float chargeSpeed;
+        public float lastTimeFired = 0;
 
         public UnityAction OnStartCharging;
         public UnityAction OnFired;
@@ -67,6 +69,12 @@ namespace Tanks.Gameplay
         public void IncrementCharge()
         {
             currentLaunchForce += chargeSpeed * Time.deltaTime;
+        }
+
+        public void CalculateOptimalForceForTarget(GameObject target)
+        {
+            float distance = Vector3.Distance(target.transform.position, transform.position);
+            targetLaunchForce = optimalForceOverDistance.Evaluate(distance);
         }
 
         public void Fire()

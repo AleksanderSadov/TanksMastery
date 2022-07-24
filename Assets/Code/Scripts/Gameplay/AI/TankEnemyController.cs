@@ -56,9 +56,13 @@ namespace Tanks.Gameplay
                 return;
             }
 
+            if (currentTarget != null)
+            {
+                shooting.CalculateOptimalForceForTarget(currentTarget);
+            }
+
             if (!shooting.isCharging)
             {
-                shooting.targetLaunchForce = 30.0f;
                 shooting.StartCharging();
             }
 
