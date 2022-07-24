@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Tanks.Gameplay
 {
@@ -64,6 +65,23 @@ namespace Tanks.Gameplay
             if (shooting.isCharging)
             {
                 shooting.IncrementCharge();
+            }
+        }
+
+        public void TryNewAttackPosition()
+        {
+            if (!movement.HasReachedDestination())
+            {
+                return;
+            }
+
+            float attackRange = sightSensor.attackRange;
+            Vector3 randomDirection = new Vector3(Random.Range(attackRange / 2, attackRange), transform.position.y, Random.Range(attackRange / 2, attackRange));
+            float randomSign = Random.Range(0f, 1f) >= 0.5f ? 1f : -1f;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(currentTarget.transform.position + randomDirection * randomSign, out hit, sightSensor.attackRange, 1 << NavMesh.GetAreaFromName("Walkable")))
+            {
+                movement.SetNavDestination(hit.position);
             }
         }
     }

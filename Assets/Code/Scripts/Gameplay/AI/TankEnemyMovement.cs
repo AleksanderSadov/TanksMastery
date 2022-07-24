@@ -59,11 +59,7 @@ namespace Tanks.Gameplay
                 return false;
             }
 
-            if (
-                !navMeshAgent.pathPending
-                && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance
-                && (!navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f)
-            )
+            if (HasReachedDestination())
             {
                 return false;
             }
@@ -74,6 +70,21 @@ namespace Tanks.Gameplay
         public override bool IsTurning()
         {
             return isTurning;
+        }
+
+        public bool HasReachedDestination()
+        {
+            if 
+                (navMeshAgent.enabled
+                && !navMeshAgent.pathPending
+                && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance
+                && (!navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f)
+            )
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public override void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius)

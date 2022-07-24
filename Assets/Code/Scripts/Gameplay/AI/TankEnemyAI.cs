@@ -66,6 +66,7 @@ namespace Tanks.Gameplay
                 case AIState.Attack:
                     enemyController.OrientTowards(enemyController.currentTarget.transform.position);
                     enemyController.TryAttack();
+                    enemyController.TryNewAttackPosition();
                     break;
             }
         }

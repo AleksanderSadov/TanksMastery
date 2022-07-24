@@ -10,12 +10,15 @@ namespace Tanks.Gameplay
         public float minLaunchForce = 15f;
         public float maxLaunchForce = 30f;
         public float maxChargeTime = 0.75f;
+        public float reloadTime = 0.75f;
 
         [HideInInspector] public float currentLaunchForce;
         [HideInInspector] public float targetLaunchForce;
         [HideInInspector] public bool isFired = false;
         [HideInInspector] public bool isCharging = false;
+        [HideInInspector] public bool isReloading = false;
         [HideInInspector] public float chargeSpeed;
+        [HideInInspector] public float lastTimeFired = 0;
 
         public UnityAction OnStartCharging;
         public UnityAction OnFired;
@@ -37,10 +40,24 @@ namespace Tanks.Gameplay
             {
                 CheckFireAtTargetLaunchForce();
             }
+
+            if (lastTimeFired > 0 && Time.time - lastTimeFired < reloadTime)
+            {
+                isReloading = true;
+            }
+            else
+            {
+                isReloading = false;
+            }
         }
 
         public void StartCharging()
         {
+            if (isReloading)
+            {
+                return;
+            }
+
             isFired = false;
             isCharging = true;
             currentLaunchForce = minLaunchForce;
@@ -56,6 +73,7 @@ namespace Tanks.Gameplay
         {
             isFired = true;
             isCharging = false;
+            lastTimeFired = Time.time;
             Rigidbody shellInstance = Instantiate(shell, fireTransform.position, fireTransform.rotation) as Rigidbody;
             shellInstance.velocity = currentLaunchForce * fireTransform.forward;
             currentLaunchForce = minLaunchForce;
