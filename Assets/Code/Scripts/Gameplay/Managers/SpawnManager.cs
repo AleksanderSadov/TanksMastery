@@ -218,6 +218,7 @@ namespace Tanks.Gameplay
             foreach (TankEnemyAI enemyAI in teamManager.bots)
             {
                 enemyAI.enabled = false;
+                enemyAI.GetComponent<TankEnemyController>().ResetDestination();
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Tanks.Gameplay
         private FindTargetSensor findTargetSensor;
         private SightSensor sightSensor;
 
-        private void Start()
+        private void Awake()
         {
             movement = GetComponent<TankEnemyMovement>();
             shooting = GetComponent<TankShooting>();
